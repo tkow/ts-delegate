@@ -70,3 +70,7 @@ obj.hello = delegate<Child, 'hello'>('hello').bind(obj)
 
 console.log(obj.hello('World')) // 'Hello, World'
 ```
+
+## License
+
+MIT
