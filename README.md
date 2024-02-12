@@ -5,7 +5,7 @@ A library make delegate method with type inherited.
 ## Usage
 
 ```ts
-import { delegate, delegateProxy } from './'
+import { delegate, delegateProxy } from '@tkow/ts-delegate'
 
 interface IChild {
   hello: (name: string) => string
