@@ -10,27 +10,27 @@
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "cross-env NODE_ENV=\"production\" webpack && tsc",
-    "build:watch": "webpack --watch",
+    "build": "tsup",
     "fmt": "prettier --write ./src/"
   },
   "files": [
-    "bin",
     "dist"
   ],
   "type": "module",
   "types": "dist/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MOCHI-inc-JAPAN/zippee.git"
+    "url": "git+https://github.com/tkow/ts-delegate.git"
   },
   "author": "tkow",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/MOCHI-inc-JAPAN/zippee/issues"
+    "url": "https://github.com/tkow/ts-delegate/issues"
   },
-  "homepage": "https://github.com/MOCHI-inc-JAPAN/zippee#readme",
+  "homepage": "https://github.com/tkow/ts-delegate#readme",
   "devDependencies": {
+    "bun-types": "^1.0.26",
+    "changeset": "^0.2.6",
     "tsup": "^8.0.2",
     "typescript": "^5.3.3"
   },

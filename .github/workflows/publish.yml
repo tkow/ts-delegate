@@ -6,7 +6,7 @@ name: push events
 on:
   push:
     branches:
-      - 'main'
+      - "main"
 
 jobs:
   publish-npm:
@@ -18,50 +18,26 @@ jobs:
 
       - uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: 18
           registry-url: https://registry.npmjs.org/
-
-      - uses: pnpm/action-setup@v2
-        name: Install pnpm
-        id: pnpm-install
-        with:
-          version: 7
-          run_install: false
-
-      - name: Get pnpm store directory
-        id: pnpm-cache
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
-      - uses: actions/cache@v3
-        name: Setup pnpm cache
-        with:
-          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: build node package
-        run: npm run build
-
+      - uses: oven-sh/setup-bun@v1
+      - run: bun install
+      - run: bun run build
       - name: Github config
         run: |
           git config --local user.email ${{ secrets.BOT_MAIL }}
           git config --local user.name ${{ secrets.BOT_NAME }}
       - name: Setup npm config
         run: |
-          pnpm config set '//registry.npmjs.org/:_authToken' '${NPM_TOKEN}'
-          pnpm config set publish-branch ${GITHUB_REF#refs/heads/}
+          npm config set '//registry.npmjs.org/:_authToken' '${NPM_TOKEN}'
         shell: bash
 
       - name: create and publish versions
         uses: changesets/action@v1
         with:
-          commit: 'chore: update versions'
-          title: 'chore: update versions'
-          publish: pnpm publish --access public
+          commit: "chore: update versions"
+          title: "chore: update versions"
+          publish: npm publish --access public
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
