@@ -52,8 +52,8 @@ class Parent {
     delegateProxy(this, new Child1(), {delegatorName: '__child1'})
     delegateProxy(this, new Child2(), {delegatorName: '__child2'})
   }
-  hello = delegate<Child, 'hello'>('hello', {delegatorName: '__child1'})
-  goodbye = delegate<Child, 'goodbye'>('goodbye', {delegatorName: '__child2'})
+  hello = delegate<Child1, 'hello'>('hello', {delegatorName: '__child1'})
+  goodbye = delegate<Child2, 'goodbye'>('goodbye', {delegatorName: '__child2'})
 }
 
 ```
