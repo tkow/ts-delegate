@@ -42,7 +42,7 @@ The hello and goodbye methods types are inherited from Child class.
 ### delegateProxy(obj, to, {delegatorId?: string})
 
 The `obj` is an object delegates method to object's set to `to`.
-Proxy to delegate is set internal variable default named `__delegator_${call_delegate_count}` of obj.
+Proxy to delegate is set internal variable default named `__delegator` of obj.
 If you want multiple instance to delegate, use unique delegatorId by each internal instance.
 
 ```ts
