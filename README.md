@@ -105,7 +105,7 @@ You can do this using Delegable API. This makes new class constructor implements
 So, if you use this class, be careful not to override them or handle them appropriately to call super method if you need.
 You can restrict delegate methods using the opts and they confines type of delegated methods with fixed type using `as const`. This options only confines types and actual mapping delegate methods runs when you call delegateAll with instance argument or calling explicitly load function returned by `delegateAll` or first calling a delegate method with first function argument to initialize instance.
 
-`delegateAll<I extends object>(delegateInstance: I | (() => I), opts?: { methods?: string[]; class?: Constructor, includesFields: boolean(default: true) })`: remap delegateInstance methods to parent class. If first arg is function and methods or class options with Delegable's delegate, you can delay to initialize instance until you call some delegate methods.If includeFields is false, you can pick methods only.
+`delegateAll<I extends object>(delegateInstance: I | (() => I), opts?: { methods?: string[]; class?: Constructor, includeFields: boolean(default: true) })`: remap delegateInstance methods to parent class. If first arg is function and methods or class options with Delegable's delegate, you can delay to initialize instance until you call some delegate methods.If includeFields is false, you can pick methods only.
 
 See the [delegateAll.spec.ts](https://github.com/tkow/ts-delegate/tree/main/src/delegateAll.spec.ts) if you want more details.
 
