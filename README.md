@@ -246,7 +246,7 @@ expect(i.invoke(new Dog)).toBe("bow");
 expect(i.invoke(new Cat)).toBe("meow");
 ```
 
-Caveat: The duckTyping remap all instance methods to proxy class and always rewrite instance methods by mapped methods, it may cause some performance problem when you.If you don't want the behavior, specify `methods` options to restrict to map methods and cache duckTyping instance each by instance to avoid rewrite same props many times.
+Caveat: The duckTyping remap all instance methods to proxy class and always rewrite instance methods by mapped methods, it may cause some performance problem when your instance have many instance methods and properties. If you don't want the behavior, specify `methods` options to restrict to map methods and cache duckTyping instance each by instance to avoid rewrite same props many times.
 
 ## License
 
