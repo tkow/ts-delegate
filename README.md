@@ -202,7 +202,7 @@ class Example extends Delegable([X, Y]) {
     super();
     this.delegateAll(() => {
       console.log("initializing X");
-      new X();
+      return new X();
     });
   }
 }
