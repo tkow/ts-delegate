@@ -1,5 +1,11 @@
 # @tkow/ts-delegate
 
+## 2.0.1
+
+### Patch Changes
+
+- b18658f: new api option includeFields
+
 ## 2.0.0
 
 ### Major Changes
