@@ -1,6 +1,6 @@
 ## ts-delegate
 
-A library make delegate method with type inherited.
+A library makes delegate method with type inherited.
 
 ## Usage
 
@@ -33,7 +33,7 @@ console.log(new Parent().hello("World")); // 'Hello, World'
 console.log(new Parent().goodbye()); // 'Goodbye'
 ```
 
-The hello and goodbye methods types are inherited from Child class.
+The hello and goodbye methods' types are inherited from Child class.
 
 ![example](./images//examle.jpg "example")
 
