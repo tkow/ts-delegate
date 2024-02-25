@@ -3,10 +3,10 @@ import { OnlyFunctionKeys } from "./types";
 function getAllDefinedFunction(target: any) {
   const prototype = Object.getPrototypeOf(target);
   const instanceMethods = Object.getOwnPropertyNames(prototype).filter(
-    (name) => typeof prototype[name] === "function",
+    (name) => typeof prototype[name] === "function"
   );
   const propertyFunctions = Object.getOwnPropertyNames(target).filter(
-    (name) => typeof target[name] === "function",
+    (name) => typeof target[name] === "function"
   );
   return instanceMethods.concat(propertyFunctions);
 }
@@ -27,7 +27,7 @@ type InferInstanceKey<K extends Constructor> = OnlyFunctionKeys<
 >;
 
 type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
-  k: infer I,
+  k: infer I
 ) => void
   ? I
   : never;
@@ -45,33 +45,33 @@ type ArgTemplate<C extends Constructor> =
 type ExtractConstructor<K extends ArgTemplate<any>> = K extends Constructor
   ? K
   : K extends { class: infer B }
-    ? B
-    : Constructor;
+  ? B
+  : Constructor;
 
 type ExtractDelegateKeys<K extends ArgTemplate<any>> = K extends Constructor
   ? keyof InstanceType<K>
   : K extends { opts: { delegate: any } }
-    ? K["opts"]["delegate"][number]
-    : K extends { class: infer A extends Constructor }
-      ? keyof InstanceType<A>
-      : never;
+  ? K["opts"]["delegate"][number]
+  : K extends { class: infer A extends Constructor }
+  ? keyof InstanceType<A>
+  : never;
 
 type ExtractExceptKeys<K extends ArgTemplate<any>> = K extends Constructor
   ? never
   : K extends { opts: { except: any } }
-    ? K["opts"]["except"][number]
-    : never;
+  ? K["opts"]["except"][number]
+  : never;
 
 type PickedKeys<K> = Exclude<ExtractDelegateKeys<K>, ExtractExceptKeys<K>>;
 
 interface DelegableInstance {
   delegateAll<P extends object>(
     delegateInstance: P | (() => P),
-    opts?: { methods?: string[]; class?: Constructor },
+    opts?: { methods?: string[]; class?: Constructor }
   ): (() => void) | void;
   duckTyping<P extends object>(
     delegateInstance: P,
-    opts?: { methods?: string[]; class?: Constructor },
+    opts?: { methods?: string[]; class?: Constructor }
   ): this;
 }
 
@@ -83,7 +83,7 @@ export function Delegable<
     > &
       DelegableInstance
   >,
-  K extends ArgTemplate<any>[] = ArgTemplate<any>[],
+  K extends ArgTemplate<any>[] = ArgTemplate<any>[]
 >(args: K): R {
   let methodMap: Record<symbol | string, { delegate?: []; except?: string[] }> =
     {};
@@ -112,14 +112,14 @@ export function Delegable<
         delete this.__privateDelegatorMap[loadDelegateInstances][key];
         if (
           Object.getOwnPropertySymbols(
-            this.__privateDelegatorMap[loadDelegateInstances],
+            this.__privateDelegatorMap[loadDelegateInstances]
           ).length <= 0
         ) {
           this.__privateDelegatorMap[loadDelegateInstances] = undefined;
         }
       } else {
         Object.getOwnPropertySymbols(
-          this.__privateDelegatorMap[loadDelegateInstances],
+          this.__privateDelegatorMap[loadDelegateInstances]
         ).forEach((key) => {
           this.__privateDelegatorMap[loadDelegateInstances][key]();
           delete this.__privateDelegatorMap[loadDelegateInstances][key];
@@ -156,15 +156,15 @@ export function Delegable<
 
     duckTyping<P extends object>(
       delegateInstance: P,
-      opts?: { methods?: string[]; class?: Constructor },
+      opts?: { methods?: string[]; class?: Constructor }
     ) {
       this.delegateAll(delegateInstance, opts);
-      return this
+      return this;
     }
 
     delegateAll<P extends object>(
       delegateInstance: P | (() => P),
-      opts?: { methods?: string[]; class?: Constructor },
+      opts?: { methods?: string[]; class?: Constructor }
     ) {
       const isLazy = typeof delegateInstance === "function";
       const methodRule =
@@ -192,7 +192,7 @@ export function Delegable<
         }
 
         const methods = (opts?.methods ?? methodRule?.delegate ?? []).filter(
-          (org) => !(methodRule?.except || []).includes(org),
+          (org) => !(methodRule?.except || []).includes(org)
         );
 
         if (methods.length > 0) {

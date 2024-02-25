@@ -12,7 +12,7 @@ export const DELEGATOR_ID = "__delegator";
 export const delegateProxy = <T extends object, P extends object>(
   self: T,
   delegateInstance: P,
-  opts: { delegatorId?: string | symbol } = {},
+  opts: { delegatorId?: string | symbol } = {}
 ): P => {
   const { delegatorId = DELEGATOR_ID } = opts;
   const proxy = new Proxy(delegateInstance as T & P, {
@@ -31,10 +31,10 @@ export const delegateProxy = <T extends object, P extends object>(
 
 export const delegate = <
   P extends object,
-  K extends OnlyFunctionKeys<P> = OnlyFunctionKeys<P>,
+  K extends OnlyFunctionKeys<P> = OnlyFunctionKeys<P>
 >(
   id: K,
-  options: { delegatorId?: string | symbol } = {},
+  options: { delegatorId?: string | symbol } = {}
 ): DelegateFunction<P[K]> => {
   const { delegatorId = DELEGATOR_ID } = options;
 

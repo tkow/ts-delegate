@@ -5,7 +5,7 @@ A library makes delegate method with type inherited.
 ## Usage
 
 ```ts
-import { delegate, delegateProxy } from '@tkow/ts-delegate'
+import { delegate, delegateProxy } from "@tkow/ts-delegate";
 
 interface IChild {
   hello: (name: string) => string;
@@ -132,9 +132,7 @@ class Y {
   hi = () => {
     return "hi";
   };
-
 }
-
 
 class Example extends Delegable([X, Y]) {
   constructor() {
@@ -144,10 +142,10 @@ class Example extends Delegable([X, Y]) {
   }
 }
 
-const a = new Example
-a.hello()
-a.hey()
-a.hi()
+const a = new Example();
+a.hello();
+a.hey();
+a.hi();
 ```
 
 Confinements type:
@@ -161,8 +159,8 @@ class X {
   };
 
   goodbye = () => {
-    return 'goodbye'
-  }
+    return "goodbye";
+  };
 }
 
 class Y {
@@ -175,13 +173,12 @@ class Y {
   hi = () => {
     return "hi";
   };
-
 }
 
 // NOTE: You need `as const` to infer inherited class interface
 class Example extends Delegable([
-  {class: X, opts: { delegate: ['hello'] }},
-  {class: Y, opts: { except: ['hi'] }}
+  { class: X, opts: { delegate: ["hello"] } },
+  { class: Y, opts: { except: ["hi"] } },
 ] as const) {
   constructor() {
     super();
@@ -190,11 +187,11 @@ class Example extends Delegable([
   }
 }
 
-const a = new Example
-a.hello() // ok
-a.goodbye() // error
-a.hey() // ok
-a.hi() // error
+const a = new Example();
+a.hello(); // ok
+a.goodbye(); // error
+a.hey(); // ok
+a.hi(); // error
 ```
 
 LazyLoad:
@@ -204,8 +201,8 @@ class Example extends Delegable([X, Y]) {
   constructor() {
     super();
     this.delegateAll(() => {
-       console.log('initializing X')
-       new X()
+      console.log("initializing X");
+      new X();
     });
   }
 }
@@ -233,17 +230,15 @@ class Cat {
   }
 }
 class Invoker {
-  constructor(
-    private animal = new Animal()
-  ) {}
+  constructor(private animal = new Animal()) {}
   invoke(instance: X) {
     return this.animal.duckTyping(instance).hello();
   }
 }
 
 const i = new Invoker();
-expect(i.invoke(new Dog)).toBe("bow");
-expect(i.invoke(new Cat)).toBe("meow");
+expect(i.invoke(new Dog())).toBe("bow");
+expect(i.invoke(new Cat())).toBe("meow");
 ```
 
 Caveat: The duckTyping remap all instance methods to proxy class and always rewrite instance methods by mapped methods, it may cause some performance problem when your instance have many instance methods and properties. If you don't want the behavior, specify `methods` options to restrict to map methods and cache duckTyping instance each by instance to avoid rewrite same props many times.

@@ -216,9 +216,7 @@ describe("dynamic delegateAll", () => {
     }
 
     class Invoker {
-      constructor(
-        private animal = new Animal()
-      ) {}
+      constructor(private animal = new Animal()) {}
 
       invoke(instance: X) {
         return this.animal.duckTyping(instance).hello();
@@ -227,9 +225,8 @@ describe("dynamic delegateAll", () => {
 
     it("should work", () => {
       const i = new Invoker();
-      expect(i.invoke(new Dog)).toBe("bow");
-      expect(i.invoke(new Cat)).toBe("meow");
-    })
-  })
+      expect(i.invoke(new Dog())).toBe("bow");
+      expect(i.invoke(new Cat())).toBe("meow");
+    });
+  });
 });
-
