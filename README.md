@@ -102,7 +102,7 @@ console.log(obj.hello("World")); // 'Hello, World'
 
 You may often want to remap all methods of an object to parent class without writing codes explicitly.
 You can do this using Delegable API. This makes new class constructor implements a public method, named delegateAll and private property, named __privateDelegatorMap.
-So, if you this class, be careful not to override them or call super method appropriately.
+So, if you use this class, be careful not to override them or call super method appropriately.
 You can restrict delegate methods using the opts and they refinements type of delegated methods with fixed type using `as const`. This options only refinements types and actual mapping delegate methods runs when you call delegateAll with instance argument or calling explicitly load function returned by `delegateAll` or first calling a delegate method with first function argument to initialize instance.
 
 `delegateAll<I extends object>(delegateInstance: I | (() => I), opts?: { methods?: string[]; class?: Constructor })`: remap delegateInstance methods to parent class. If first arg is function and methods or class options with Delegable's delegate, you can delay to initialize instance until you call some delegate methods.
