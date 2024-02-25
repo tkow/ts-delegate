@@ -1,13 +1,20 @@
-import { OnlyFunctionKeys } from "./types";
+import { StringKeyOf, OnlyFunctionKeys } from "./types";
 
-function getAllDefinedFunction(target: any) {
+function getAllDefinedProperties(target: any, opts: {includeFields?: boolean} = {}) {
+  const { includeFields = true } = opts
   const prototype = Object.getPrototypeOf(target);
-  const instanceMethods = Object.getOwnPropertyNames(prototype).filter(
-    (name) => typeof prototype[name] === "function"
-  );
-  const propertyFunctions = Object.getOwnPropertyNames(target).filter(
-    (name) => typeof target[name] === "function"
-  );
+  let instanceMethods = Object.getOwnPropertyNames(prototype)
+  if(!includeFields){
+    instanceMethods = instanceMethods.filter(
+      (name) => typeof prototype[name] === "function"
+    );
+  }
+  let propertyFunctions = Object.getOwnPropertyNames(target)
+  if(!includeFields){
+    propertyFunctions = propertyFunctions.filter(
+      (name) => typeof target[name] === "function"
+    );
+  }
   return instanceMethods.concat(propertyFunctions);
 }
 
@@ -22,7 +29,7 @@ function createClassId(klass: Constructor): string | symbol {
 
 type Constructor<P = any> = { new (...args: any[]): P };
 
-type InferInstanceKey<K extends Constructor> = OnlyFunctionKeys<
+type InferInstanceKey<K extends Constructor> = StringKeyOf<
   UnionToIntersection<InstanceType<K>>
 >;
 
@@ -39,6 +46,7 @@ type ArgTemplate<C extends Constructor> =
       opts: {
         except?: InferInstanceKey<C>[];
         delegate?: InferInstanceKey<C>[];
+        includeFields?: boolean;
       };
     };
 
@@ -53,7 +61,9 @@ type ExtractDelegateKeys<K extends ArgTemplate<any>> = K extends Constructor
   : K extends { opts: { delegate: any } }
   ? K["opts"]["delegate"][number]
   : K extends { class: infer A extends Constructor }
-  ? keyof InstanceType<A>
+  ? K extends { opts: { includeFields: false } }
+  ? OnlyFunctionKeys<InstanceType<A>>
+  : keyof InstanceType<A>
   : never;
 
 type ExtractExceptKeys<K extends ArgTemplate<any>> = K extends Constructor
@@ -67,7 +77,7 @@ type PickedKeys<K> = Exclude<ExtractDelegateKeys<K>, ExtractExceptKeys<K>>;
 interface DelegableInstance {
   delegateAll<P extends object>(
     delegateInstance: P | (() => P),
-    opts?: { methods?: string[]; class?: Constructor }
+    opts?: { methods?: string[]; class?: Constructor; includeFields?: boolean }
   ): (() => void) | void;
   duckTyping<P extends object>(
     delegateInstance: P,
@@ -85,7 +95,7 @@ export function Delegable<
   >,
   K extends ArgTemplate<any>[] = ArgTemplate<any>[]
 >(args: K): R {
-  let methodMap: Record<symbol | string, { delegate?: []; except?: string[] }> =
+  let methodMap: Record<symbol | string, { delegate?: []; except?: string[], includeFields?: boolean}> =
     {};
   for (let arg of args) {
     if (!(arg instanceof Function)) {
@@ -164,7 +174,7 @@ export function Delegable<
 
     delegateAll<P extends object>(
       delegateInstance: P | (() => P),
-      opts?: { methods?: string[]; class?: Constructor }
+      opts?: { methods?: string[]; class?: Constructor, includeFields?: boolean }
     ) {
       const isLazy = typeof delegateInstance === "function";
       const methodRule =
@@ -207,7 +217,7 @@ export function Delegable<
       const methods = (
         opts?.methods ??
         methodRule?.delegate ??
-        getAllDefinedFunction(delegateInstance)
+        getAllDefinedProperties(delegateInstance, {includeFields: opts?.includeFields || methodRule?.includeFields})
       ).filter((org) => !(methodRule?.except || []).includes(org));
       const methodsSet = new Set(methods);
       methodsSet.forEach((prop) => {
