@@ -3,7 +3,7 @@ import { Delegable } from "./delegateAll";
 
 class X {
   constructor() {}
-
+  value = 1;
   hello = () => {
     return "hello";
   };
@@ -218,7 +218,7 @@ describe("dynamic delegateAll", () => {
     class Invoker {
       constructor(private animal = new Animal()) {}
 
-      invoke(instance: X) {
+      invoke(instance: Pick<X, 'hello'>) {
         return this.animal.duckTyping(instance).hello();
       }
     }
@@ -229,4 +229,28 @@ describe("dynamic delegateAll", () => {
       expect(i.invoke(new Cat())).toBe("meow");
     });
   });
+  describe("includeFields properties mapping", () => {
+    it('includeFields: true', () =>{
+      class S extends Delegable([{ class: X, opts: {includeFields: true} }] as const) {
+        constructor() {
+          super();
+          this.delegateAll(new X());
+        }
+      }
+
+      const a = new S();
+      expect(a.value).toBe(1)
+    })
+    it('includeFields: false', () =>{
+      class S extends Delegable([{ class: X, opts:{ includeFields: false } }] as const) {
+        constructor() {
+          super();
+          this.delegateAll(new X());
+        }
+      }
+      const a = new S();
+      expect((a as any).value).toBeUndefined()
+    })
+
+  })
 });
