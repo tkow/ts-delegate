@@ -51,8 +51,8 @@ class Parent {
     delegateProxy(this, new Child1(), { delegatorId: "__child1" });
     delegateProxy(this, new Child2(), { delegatorId: "__child2" });
   }
-  hello = delegate<Child, "hello">("hello", { delegatorId: "__child1" });
-  goodbye = delegate<Child, "goodbye">("goodbye", {
+  hello = delegate<Child1, "hello">("hello", { delegatorId: "__child1" });
+  goodbye = delegate<Child2, "goodbye">("goodbye", {
     delegatorId: "__child2",
   });
 }
@@ -74,10 +74,10 @@ class Parent {
       delegatorId: Parent.DELEGATOR_ID.child2,
     });
   }
-  hello = delegate<Child, "hello">("hello", {
+  hello = delegate<Child1, "hello">("hello", {
     delegatorId: Parent.DELEGATOR_ID.child1,
   });
-  goodbye = delegate<Child, "goodbye">("goodbye", {
+  goodbye = delegate<Child2, "goodbye">("goodbye", {
     delegatorId: Parent.DELEGATOR_ID.child2,
   });
 }
