@@ -195,4 +195,41 @@ describe("dynamic delegateAll", () => {
     expect(b.hello()).toBe("hello");
     expect(b.mockX).toHaveBeenCalled();
   });
+
+  describe("use duck typing", () => {
+    class Animal extends Delegable([X]) {
+      constructor() {
+        super();
+      }
+    }
+
+    class Dog {
+      hello() {
+        return "bow";
+      }
+    }
+
+    class Cat {
+      hello() {
+        return "meow";
+      }
+    }
+
+    class Invoker {
+      constructor(
+        private animal = new Animal()
+      ) {}
+
+      invoke(instance: X) {
+        return this.animal.duckTyping(instance).hello();
+      }
+    }
+
+    it("should work", () => {
+      const i = new Invoker();
+      expect(i.invoke(new Dog)).toBe("bow");
+      expect(i.invoke(new Cat)).toBe("meow");
+    })
+  })
 });
+

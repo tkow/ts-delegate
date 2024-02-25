@@ -101,9 +101,9 @@ console.log(obj.hello("World")); // 'Hello, World'
 ### Delegable(args: (Constructor | {class: Constructor, opts?: {delegate: keyof Instance[], except: keyof Instance[] }})[])
 
 You may often want to remap all methods of an object to parent class without writing codes explicitly.
-You can do this using Delegable API. This makes new class constructor implements a public method, named delegateAll and private property, named __privateDelegatorMap.
-So, if you use this class, be careful not to override them or call super method appropriately.
-You can restrict delegate methods using the opts and they refinements type of delegated methods with fixed type using `as const`. This options only refinements types and actual mapping delegate methods runs when you call delegateAll with instance argument or calling explicitly load function returned by `delegateAll` or first calling a delegate method with first function argument to initialize instance.
+You can do this using Delegable API. This makes new class constructor implements public methods, named `delegateAll` and `duckTyping`, and private property, named `__privateDelegatorMap`.
+So, if you use this class, be careful not to override them or handle them appropriately to call super method if you need.
+You can restrict delegate methods using the opts and they confines type of delegated methods with fixed type using `as const`. This options only confines types and actual mapping delegate methods runs when you call delegateAll with instance argument or calling explicitly load function returned by `delegateAll` or first calling a delegate method with first function argument to initialize instance.
 
 `delegateAll<I extends object>(delegateInstance: I | (() => I), opts?: { methods?: string[]; class?: Constructor })`: remap delegateInstance methods to parent class. If first arg is function and methods or class options with Delegable's delegate, you can delay to initialize instance until you call some delegate methods.
 
@@ -149,6 +149,104 @@ a.hello()
 a.hey()
 a.hi()
 ```
+
+Confinements type:
+
+```ts
+class X {
+  constructor() {}
+
+  hello = () => {
+    return "hello";
+  };
+
+  goodbye = () => {
+    return 'goodbye'
+  }
+}
+
+class Y {
+  constructor() {}
+
+  hey = () => {
+    return "hey";
+  };
+
+  hi = () => {
+    return "hi";
+  };
+
+}
+
+// NOTE: You need `as const` to infer inherited class interface
+class Example extends Delegable([
+  {class: X, opts: { delegate: ['hello'] }},
+  {class: Y, opts: { except: ['hi'] }}
+] as const) {
+  constructor() {
+    super();
+    this.delegateAll(new X());
+    this.delegateAll(new Y());
+  }
+}
+
+const a = new Example
+a.hello() // ok
+a.goodbye() // error
+a.hey() // ok
+a.hi() // error
+```
+
+LazyLoad:
+
+```ts
+class Example extends Delegable([X, Y]) {
+  constructor() {
+    super();
+    this.delegateAll(() => {
+       console.log('initializing X')
+       new X()
+    });
+  }
+}
+
+const a = new Example();
+expect(a.hello()).toBe("hello"); // with output: initializing X
+```
+
+DuckTyping:
+
+```ts
+class Animal extends Delegable([X]) {
+  constructor() {
+    super();
+  }
+}
+class Dog {
+  hello() {
+    return "bow";
+  }
+}
+class Cat {
+  hello() {
+    return "meow";
+  }
+}
+class Invoker {
+  constructor(
+    private animal = new Animal()
+  ) {}
+  invoke(instance: X) {
+    return this.animal.duckTyping(instance).hello();
+  }
+}
+
+const i = new Invoker();
+expect(i.invoke(new Dog)).toBe("bow");
+expect(i.invoke(new Cat)).toBe("meow");
+```
+
+Caveat: The duckTyping remap all instance methods to proxy class and always rewrite instance methods by mapped methods, it may cause some performance problem when you.If you don't want the behavior, specify `methods` options to restrict to map methods and cache duckTyping instance each by instance to avoid rewrite same props many times.
 
 ## License
 

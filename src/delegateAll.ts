@@ -69,6 +69,10 @@ interface DelegableInstance {
     delegateInstance: P | (() => P),
     opts?: { methods?: string[]; class?: Constructor },
   ): (() => void) | void;
+  duckTyping<P extends object>(
+    delegateInstance: P,
+    opts?: { methods?: string[]; class?: Constructor },
+  ): this;
 }
 
 export function Delegable<
@@ -148,6 +152,14 @@ export function Delegable<
           return getter;
         },
       });
+    }
+
+    duckTyping<P extends object>(
+      delegateInstance: P,
+      opts?: { methods?: string[]; class?: Constructor },
+    ) {
+      this.delegateAll(delegateInstance, opts);
+      return this
     }
 
     delegateAll<P extends object>(
